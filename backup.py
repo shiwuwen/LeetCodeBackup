@@ -1,3 +1,109 @@
+#剑指Offer 18 删除链表结点
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+class Solution:
+    def deleteNode(self, head: ListNode, val: int) -> ListNode:
+        pre = head
+
+        if pre.val==val:
+            head = pre.next
+            return head
+
+        while pre.next:
+            if pre.next.val == val:
+                temp = pre.next
+                pre.next = temp.next
+                return head
+            
+            pre = pre.next
+
+
+#剑指Offer 17 打印1到最大的n位数
+class Solution:
+    def printNumbers(self, n: int) -> List[int]:
+        #未考虑n大于int32的情况
+        nums = 10**n
+        result = []
+        for i in range(1, nums):
+            result.append(i)
+        
+        return result
+
+        # def dfs(x):
+        #     if x==n:
+        #         res = ''.join(nums)
+        #         result.append(int(res))
+        #         return
+            
+        #     for i in range(10):
+        #         nums.append(str(i))
+        #         dfs(x+1)
+        #         nums.pop()
+        
+        # nums = []
+        # result = []
+        # dfs(0)
+        # return result
+
+
+#剑指Offer 16 数值的整数次方
+class Solution:
+    def myPow(self, x: float, n: int) -> float:
+        if x==0:
+            return 0
+        
+        res = 1
+        if n<0:
+            x, n = 1/x, -n
+        while n:
+            if n&1:
+                res *= x
+            x *= x
+            n >>= 1
+        return res
+
+
+#剑指Offer 15 二进制中1的个数
+class Solution:
+    def hammingWeight(self, n: int) -> int:
+        #method1
+        #n&1确定最右一位是否为1
+        # result = 0
+        # while n:
+        #     result += n&1
+        #     n >>=1
+        # return result
+
+        #method2
+        #n&(n-1)可消除n中的一个1
+        result = 0
+        while n:
+            n &= n-1
+            result += 1
+        return result
+
+
+#剑指Offer 14-1 14-2 剪绳子
+class Solution:
+    def cuttingRope(self, n: int) -> int:
+        #由算术均值不等式得当各段相等时乘积最大
+        #由导数得n为e时值最大
+
+        if n<=3:
+            return n-1
+        
+        a,b = n//3, n%3
+        if b==0:
+            return 3**a
+        if b==1:
+            return (3**(a-1))*4
+        if b==2:
+            return (3**a)*2
+
+
 #剑指Offer 12 矩阵中的路径
 class Solution:
     def exist(self, board: List[List[str]], word: str) -> bool:
