@@ -1,3 +1,296 @@
+# 剑指 Offer 54. 二叉搜索树的第k大节点
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def kthLargest(self, root: TreeNode, k: int) -> int:
+
+        def traversal(root):
+            if not root:
+                return 
+            
+            traversal(root.right)
+            if self.k == 0:
+                return
+            self.k -= 1
+            if self.k == 0:
+                self.res = root.val
+            traversal(root.left)
+
+        self.k = k
+        # self.res = -100
+        traversal(root)
+
+        return self.res
+
+
+# 剑指 Offer 53 - II. 0～n-1中缺失的数字
+class Solution:
+    def missingNumber(self, nums: List[int]) -> int:
+
+        left = 0
+        right = len(nums) - 1
+        # mid = 0 
+
+        # if left == right:
+        #     if left == nums[left]:
+        #         return left + 1
+        #     else:
+        #         return left
+
+        while left < right:
+            mid = (right + left) // 2
+            if mid == nums[mid]:
+                left = mid + 1
+            else:
+                right = mid
+                
+        if left == len(nums)-1 and left == nums[-1]:
+            # if left == nums[-1]:
+            return left + 1
+        
+        # if right == 0:
+        #     return 0
+        
+        return left
+
+
+# 剑指 Offer 53 - I. 在排序数组中查找数字 I
+class Solution:
+    def search(self, nums: List[int], target: int) -> int:
+        length = len(nums)
+        index = 0
+        count = 0
+
+        while index < length:
+            if target < nums[index]:
+                return count
+            elif target == nums[index]:
+                count += 1
+                index += 1
+            else:
+                index += 1
+            
+        return count 
+
+
+# 剑指 Offer 52. 两个链表的第一个公共节点
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> ListNode:
+        
+        lenA = 0
+        lenB = 0
+
+        tempA = headA
+        tempB = headB
+        while tempA:
+            lenA += 1 
+            tempA = tempA.next
+        
+        while tempB:
+            lenB += 1
+            tempB = tempB.next
+        
+        subAB = lenA - lenB
+
+        if subAB > 0:
+            while subAB:
+                headA = headA.next
+                subAB -= 1
+        elif subAB < 0:
+            while subAB:
+                headB = headB.next
+                subAB += 1
+        
+        while headA :
+            if headA == headB:
+                return headA
+            headA = headA.next
+            headB = headB.next
+        
+        return None
+
+
+#剑指 Offer 38 字符串的排列
+class Solution:
+    def permutation(self, s: str) -> List[str]:
+        def dfs(inputlist, string ,result):
+            if len(inputlist)==0:
+                temp = copy.deepcopy(string)
+                result.append(temp)
+                return 
+            
+            for j in range(len(inputlist)):
+                string += inputlist[j]
+                templist = copy.deepcopy(inputlist)
+                templist.pop(j)
+                dfs(templist, string, result)
+                string = string[:-1]
+
+        strlist = [item for item in s]
+
+        result = []
+        string = ''
+        dfs(strlist, string, result)
+        return list(set(result))
+
+
+#剑指 Offer 36 二叉搜索树与双向链表
+"""
+# Definition for a Node.
+class Node:
+    def __init__(self, val, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+"""
+class Solution:
+    def treeToDoublyList(self, root: 'Node') -> 'Node':
+        if not root:
+            return root
+
+        def inordertrave(root):
+            if not root:
+                return None
+            
+            inordertrave(root.left)
+            nodelist.append(root)
+            inordertrave(root.right)
+
+        nodelist = []
+        inordertrave(root)
+        listsize = len(nodelist)
+        temp = listsize - 1
+
+        for index in range(listsize):
+            nodelist[index].right = nodelist[(index+1)%listsize]
+            nodelist[index].left = nodelist[(index+temp)%listsize]
+
+        return nodelist[0]
+
+
+#剑指 Offer 35 复杂链表的复制
+"""
+# Definition for a Node.
+class Node:
+    def __init__(self, x: int, next: 'Node' = None, random: 'Node' = None):
+        self.val = int(x)
+        self.next = next
+        self.random = random
+"""
+class Solution:
+    def copyRandomList(self, head: 'Node') -> 'Node':
+        def dfs(head):
+            if not head:
+                return None
+            if head in visited.keys():
+                return visited[head]
+
+            temp = Node(head.val)
+            visited[head] = temp
+            temp.next = dfs(head.next)
+            temp.random = dfs(head.random)
+
+            return temp
+        
+        visited = {}
+        return dfs(head)
+
+
+#剑指Offer 40 最小的K的数
+class Solution:
+    def getLeastNumbers(self, arr: List[int], k: int) -> List[int]:
+        arr.sort()
+        return arr[:k]
+
+
+#剑指Offer 39 数组中出现次数超过一半的数字
+#可使用hashmap
+#摩尔投票法
+class Solution:
+    def majorityElement(self, nums: List[int]) -> int:
+        nums.sort()
+        return nums[len(nums)//2]
+
+
+#剑指Offer 34 二叉树中和为某一值的路径
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def pathSum(self, root: TreeNode, sum: int) -> List[List[int]]:
+        if not root:
+            return []
+        result = []
+        cursum = 0
+        temp = []
+
+        self.dfs(root, cursum, sum, temp, result)
+        return result
+
+    def dfs(self, root, cursum, sum, temp, result):
+        
+        temp.append(root.val)
+        cursum += root.val
+        if not root.left and not root.right:
+            if cursum==sum:
+                result.append(copy.deepcopy(temp))
+                temp.pop()
+                cursum -= root.val
+                return
+            else:
+                temp.pop()
+                cursum -= root.val
+                return
+
+        if root.left:
+            self.dfs(root.left, cursum, sum, temp, result)
+            
+        if root.right:
+            self.dfs(root.right, cursum, sum, temp, result)  
+        temp.pop()
+
+
+#剑指Offer 33 二叉搜索树的后序遍历序列
+class Solution:
+    def verifyPostorder(self, postorder: List[int]) -> bool:
+        if len(postorder)<=1:
+            return True
+        
+        root = postorder[-1]
+        lefttree = []
+        righttree = []
+        k = -1
+        for i in range(len(postorder)-1):
+            if postorder[i]<root:
+                lefttree.append(postorder[i])
+            else:
+                k = i
+                break
+        if k != -1:
+            for i in range(k, len(postorder)-1):
+                if postorder[i]<root:
+                    return False
+                else:
+                    righttree.append(postorder[i])
+        
+        return self.verifyPostorder(lefttree) and self.verifyPostorder(righttree)
+
+
 #剑指Offer 32-3 从上到下打印二叉树3
 # Definition for a binary tree node.
 # class TreeNode:
