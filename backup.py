@@ -1,3 +1,114 @@
+# 剑指 Offer 56 - II. 数组中数字出现的次数 II
+class Solution:
+    def singleNumber(self, nums: List[int]) -> int:
+        #方法1 使用字典求解
+        # counter_dic = collections.Counter(nums)
+
+        # for key, val in counter_dic.items():
+        #     if val == 1:
+        #         return key
+        
+        #方法2 使用位运算求解
+        binary = [0]*32
+
+        for num in nums:
+            for i in range(32):
+                binary[i] += (num & 1)
+                num >>= 1
+        res = 0
+        for i in range(32):
+            if binary[i] % 3 != 0:
+                res += pow(2, i)
+
+        return res
+
+
+# 剑指 Offer 56 - I. 数组中数字出现的次数
+class Solution:
+    def singleNumbers(self, nums: List[int]) -> List[int]:
+        #方法1 字典
+        # counter_dic = {}
+
+        # for num in nums:
+        #     counter_dic[num] = counter_dic.get(num, 0) + 1
+
+        # # counter_dic = collections.Counter(nums)
+
+        # result = []
+
+        # for key, val in counter_dic.items():
+        #     if val == 1:
+        #         result.append(key)
+        
+
+        # return result
+
+        #方法二 位运算
+        xor_result = functools.reduce(lambda x,y: x^y, nums)
+
+        a = b = 0
+
+        div = 1
+        while div & xor_result == 0:
+            div <<= 1
+        
+        for num in nums:
+            if num & div:
+                a ^= num
+            else:
+                b ^= num
+        
+        return [a,b]       
+
+
+# 剑指 Offer 55 - II. 平衡二叉树
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def isBalanced(self, root: TreeNode) -> bool:
+        if root == None:
+            return True
+        elif abs(self.get_deepth(root.left) - self.get_deepth(root.right)) > 1:
+            return False
+        else:
+            return self.isBalanced(root.left) and self.isBalanced(root.right)
+        
+
+    def get_deepth(self, root):
+        if root == None:
+            return 0
+        elif root.left==None and root.right==None:
+            return 1
+        else:
+            return max(self.get_deepth(root.left), self.get_deepth(root.right)) + 1
+
+
+# 剑指 Offer 55 - I. 二叉树的深度
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def get_max_deepth(self, root):
+        if root == None:
+            return 0
+        elif root.left == None and root.right == None:
+            return 1
+        else: 
+            return max(self.get_max_deepth(root.left), self.get_max_deepth(root.right)) + 1
+
+    def maxDepth(self, root: TreeNode) -> int:
+        return self.get_max_deepth(root)
+
+
 # 剑指 Offer 54. 二叉搜索树的第k大节点
 # Definition for a binary tree node.
 # class TreeNode:
