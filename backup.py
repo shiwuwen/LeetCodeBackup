@@ -1,3 +1,193 @@
+# 剑指 Offer 59 - II. 队列的最大值
+class MaxQueue:
+
+    def __init__(self):
+        self.max_queue = collections.deque()
+        self.queue = collections.deque()
+
+
+    def max_value(self) -> int:
+        if self.max_queue:
+            return self.max_queue[0]
+        else:
+            return -1
+
+
+    def push_back(self, value: int) -> None:
+        self.queue.append(value)
+    
+        while self.max_queue and self.max_queue[-1]<value:
+            self.max_queue.pop()
+        self.max_queue.append(value)
+
+    def pop_front(self) -> int:
+        if self.queue:
+            pop_value = self.queue.popleft()
+            if pop_value==self.max_queue[0]:
+                self.max_queue.popleft()
+            return pop_value
+        else:
+            return -1
+# Your MaxQueue object will be instantiated and called as such:
+# obj = MaxQueue()
+# param_1 = obj.max_value()
+# obj.push_back(value)
+# param_3 = obj.pop_front()
+
+# 超时
+class MaxQueue:
+
+    def __init__(self):
+        self.curr_max = -1
+        self.queue = collections.deque()
+
+    def max_value(self) -> int:
+        if self.curr_max == -1 and self.queue:
+            return max(self.queue)
+        else:
+            return self.curr_max
+
+
+    def push_back(self, value: int) -> None:
+        self.queue.append(value)
+        if value>self.curr_max:
+            self.curr_max = value
+
+
+    def pop_front(self) -> int:
+        if self.queue:
+            pop_value = self.queue.popleft()
+            if pop_value==self.curr_max:
+                self.curr_max = -1
+            return pop_value
+        else:
+            return -1
+
+    def get_curr_max(self):
+        if not self.queue:
+            self.curr_max == -1
+        else:
+            self.curr_max = max(self.queue)
+
+
+# 剑指 Offer 59 - I. 滑动窗口的最大值
+class Solution:
+    def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
+        # 处理空队列
+        if len(nums)==0:
+            return []
+
+        i,j = 0,k-1
+        #在窗口k中获得最大值及其下标
+        def get_curr_max(i, j):
+            curr_max = nums[i]
+            curr_max_index = i
+            for index in range(i, j+1):
+                if nums[index] > curr_max:
+                    curr_max = nums[index]
+                    curr_max_index = index
+            return curr_max, curr_max_index
+        #获得初始时的下标
+        curr_max, curr_max_index = get_curr_max(i,j)
+        res = [curr_max]
+        #滑动窗口 n-k+1次
+        while j<len(nums)-1:
+            i += 1
+            j += 1
+            #如果上一轮的最大值在窗口外，则重新获取最大值
+            if curr_max_index<i:
+                curr_max, curr_max_index = get_curr_max(i,j)
+                res.append(curr_max)
+            #如果上一轮最大值还在窗口内
+            #如果新加入的值更大，则修改当前最大值
+            elif nums[j]>curr_max:
+                    curr_max_index = j
+                    curr_max = nums[j]
+                    res.append(curr_max)
+            #否则维持原状
+            else:
+                res.append(curr_max)
+        
+        return res
+
+
+# 剑指 Offer 58 - II. 左旋转字符串
+class Solution:
+    def reverseLeftWords(self, s: str, n: int) -> str:
+
+        sub_str = s[:n]
+        result = s[n:]
+
+        return result + sub_str
+
+
+# 剑指 Offer 58 - I. 翻转单词顺序
+class Solution:
+    def reverseWords(self, s: str) -> str:
+
+        str_list = s.strip().split(' ')
+        res = ''
+        for val in str_list[::-1]:
+            if val != '':
+                res += val
+                res += ' '
+        
+        return res.strip()
+
+
+# 剑指 Offer 57 - II. 和为s的连续正数序列
+class Solution:
+    def findContinuousSequence(self, target: int) -> List[List[int]]:
+
+        if target<3:
+            return []
+        res = []    
+        left, right = 1,2
+        while left < right and (right-1 <= target/2):
+            sum = (left+right)*(right-left+1)/2
+            if sum == target:
+                res.append([x for x in range(left, right+1)])
+                right += 1
+            elif sum>target:
+                left += 1
+            else:
+                right += 1
+
+        return res
+
+
+# 剑指 Offer 57. 和为s的两个数字
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        # 方法一 使用双重循环，利用数组有序提前终止
+        # stop_index = len(nums)
+        # for index in range(len(nums)):
+        #     if nums[index] >= target:
+        #         stop_index = index
+        #         break
+        
+        # for i in range(stop_index-1, -1, -1):
+        #     for j in range(stop_index):
+        #         if i!=j:
+        #             if nums[i] + nums[j] == target:
+        #                 return [nums[j], nums[i]]
+        #             elif nums[i] + nums[j] > target:
+        #                 break
+
+        # 使用双指针，时间复杂度0(n)
+        i, j = 0, len(nums)-1
+        while i<j:
+            s = nums[i] + nums[j]
+            if s>target:
+                j -= 1
+            elif s== target:
+                return [nums[i], nums[j]]
+            else:
+                i += 1
+        
+        return []
+
+
 # 剑指 Offer 56 - II. 数组中数字出现的次数 II
 class Solution:
     def singleNumber(self, nums: List[int]) -> int:
