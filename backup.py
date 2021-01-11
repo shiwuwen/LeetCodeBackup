@@ -1,3 +1,79 @@
+# 剑指 Offer 63. 股票的最大利润
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        '''
+        记录历史最低价，并考虑当天价格与历史最低价的差值
+        '''
+        max_profit = 0
+        min_price = math.inf
+
+        for price in prices:
+            max_profit = max(price-min_price, max_profit)
+            min_price = min(price, min_price)
+
+        return max_profit
+
+
+# 剑指 Offer 62. 圆圈中最后剩下的数字 
+class Solution:
+    def lastRemaining(self, n: int, m: int) -> int:
+        '''
+        约瑟夫问题
+        f(n,m) = [f(n-1, m) + m] % n , n>1
+                 0, n=1 
+        ''' 
+
+        f = 0
+        for i in range(2, n+1):
+            f = (m+f) % i
+        
+        return f
+
+
+# 剑指 Offer 61. 扑克牌中的顺子
+class Solution:
+    def isStraight(self, nums: List[int]) -> bool:
+        
+        nums.sort()
+        min_val = -1
+        max_val = nums[-1]
+        for i in range(len(nums)-1):
+            if nums[i] != 0 and nums[i]==nums[i+1]:
+                return False
+        
+        for val in nums:
+            if val != 0:
+                min_val = val
+                break
+
+        if max_val-min_val<5:
+            return True
+        else:
+            return False
+
+
+# 剑指 Offer 60. n个骰子的点数
+class Solution:
+    def dicesProbability(self, n: int) -> List[float]:
+        temp_list = [[0 for _ in range(6*n+1)] for _ in range(n+1)]
+
+        for i in range(7):
+            temp_list[1][i] = 1
+
+        for i in range(2,n+1):
+            for j in range(i, 6*i+1):
+                for cur in range(1,7):
+                    if j>=cur+1:
+                        temp_list[i][j] += temp_list[i-1][j-cur]
+
+        sum_value = 6**n
+        res = []
+        for i in range(n, 6*n+1):
+            res.append(temp_list[n][i]*1.0 / sum_value)
+
+        return res
+
+
 # 剑指 Offer 59 - II. 队列的最大值
 class MaxQueue:
 
