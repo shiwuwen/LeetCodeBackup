@@ -1,3 +1,103 @@
+# 剑指 Offer 68 - I. 二叉搜索树的最近公共祖先
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+
+        def get_target_node(root, target_node):
+            path = []
+            path.append(root)
+            while target_node != root:
+                
+                if target_node.val > root.val:
+                    root = root.right
+                    path.append(root)
+                else:
+                    root = root.left
+                    path.append(root)
+        
+            return path
+
+        # root_p = root_q = root
+        path_p = get_target_node(root, p)
+        path_q = get_target_node(root, q)
+        res = None
+
+        for u, v in zip(path_p, path_q):
+            if u == v:
+                res = u
+            else:
+                break
+                
+        return res
+
+
+
+# 剑指 Offer 66. 构建乘积数组
+class Solution:
+    def constructArr(self, a: List[int]) -> List[int]:
+        a_len = len(a)
+
+        if not a_len:
+            return []
+
+        # 一般解法
+        # b, left, right = [0]*a_len, [0]*a_len, [0]*a_len
+        # left[0] = right[a_len-1] = 1
+
+        # for i in range(1, a_len):
+        #     left[i]  = left[i-1] * a[i-1]
+
+        # for i in range(a_len-2, -1, -1):
+        #     right[i] = right[i+1] * a[i+1]
+
+        # for i in range(a_len):
+        #     b[i] = left[i] * right[i]
+
+        # return b
+
+        #节省空间
+        b, tmp = [0]*a_len, 1
+        b[0] = 1
+
+        for i in range(1,a_len):
+            b[i] = b[i-1] * a[i-1]
+
+        for i in range(a_len-2, -1, -1):
+            tmp *= a[i+1]
+            b[i] *= tmp
+
+        return b
+
+
+# 剑指 Offer 65. 不用加减乘除做加法
+class Solution:
+    def add(self, a: int, b: int) -> int:
+
+        x = 0xffffffff
+        a, b = a&x, b&x
+        while b !=0:
+            a, b = (a^b), (a&b)<<1 &x
+        
+        return a if a<=0x7fffffff else ~(a^x)
+
+
+# 剑指 Offer 64. 求1+2+…+n
+class Solution:
+    def __init__(self):
+        self.res = 0
+
+    def sumNums(self, n: int) -> int:
+        n > 0 and self.sumNums(n-1)
+        self.res += n 
+        return self.res 
+
+
 # 剑指 Offer 63. 股票的最大利润
 class Solution:
     def maxProfit(self, prices: List[int]) -> int:
