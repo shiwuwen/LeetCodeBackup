@@ -1,3 +1,360 @@
+'''
+动态规划：
+	最大子数组： 53
+	最长公共子序列： 1143 583 712
+	背包问题： 416 518 0-1背包
+	股票买卖：
+
+二叉树：124 105 99
+
+回溯： N皇后
+
+BFS： 111 752
+
+双指针：
+	滑动窗口： 76 567 438 3 *** 双指针
+	nsum： 1 15 18 *** 排序+双指针/哈希表
+    移除元素： 27
+    链表： 142 206
+
+哈希表： 1 454 
+
+'''
+###### nsum start ############
+# 1. 两数之和
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        # 暴力
+        # length = len(nums)
+        # for i in range(length-1):
+        #     for j in range(i+1, length):
+        #         if target == nums[i] + nums[j]:
+        #             return [i, j]
+        
+        # return []
+
+        # 哈希表
+        hashtable = {}
+        for i in range(len(nums)):
+            sub = target - nums[i]
+            if sub in hashtable.keys():
+                return [hashtable[sub], i]
+            hashtable[nums[i]] = i
+        
+        return []
+
+        # 双指针
+        # def twoSum(self, nums, target):
+        # list_len = len(nums)
+        # left = 0
+        # right = list_len - 1
+        # res = []
+        # while left < right:
+        #     temp = nums[left]+nums[right]
+        #     if  temp == target:
+        #         res.append([nums[left], nums[right]])
+        #         while left<right and nums[left]==nums[left+1]:
+        #             left += 1
+        #         left += 1
+        #         while left<right and nums[right]==nums[right-1]:
+        #             right -= 1
+        #         right -= 1
+        #     elif temp < target:
+        #         while left<right and nums[left]==nums[left+1]:
+        #             left += 1
+        #         left += 1
+        #     else:
+        #         while left<right and nums[right]==nums[right-1]:
+        #             right -= 1
+        #         right -= 1
+
+        # return res
+
+# 15. 三数之和
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+
+        threeSumRes = []
+        nums.sort()
+        list_len = len(nums)
+        index = 0
+        while index < list_len-2:
+            twoSumRes = self.twoSum(nums[index+1:], -nums[index])
+            for val in twoSumRes:
+                val.append(nums[index])
+                threeSumRes.append(val)
+            
+            while index<list_len-3 and nums[index]==nums[index+1]:
+                index += 1
+            index += 1
+
+        return threeSumRes
+
+    def twoSum(self, nums, target):
+        list_len = len(nums)
+        left = 0
+        right = list_len - 1
+        res = []
+        while left < right:
+            temp = nums[left]+nums[right]
+            if  temp == target:
+                res.append([nums[left], nums[right]])
+                while left<right and nums[left]==nums[left+1]:
+                    left += 1
+                left += 1
+                while left<right and nums[right]==nums[right-1]:
+                    right -= 1
+                right -= 1
+            elif temp < target:
+                while left<right and nums[left]==nums[left+1]:
+                    left += 1
+                left += 1
+            else:
+                while left<right and nums[right]==nums[right-1]:
+                    right -= 1
+                right -= 1
+
+        return res
+
+# 18. 四数之和
+class Solution:
+    def fourSum(self, nums: List[int], target: int) -> List[List[int]]:
+        fourSumRes = []
+        nums.sort()
+        list_len = len(nums)
+        index = 0
+        while index < list_len-3:
+            threeSumRes = self.threeSum(nums[index+1:], target-nums[index])
+            for val in threeSumRes:
+                val.append(nums[index])
+                fourSumRes.append(val)
+            
+            while index<list_len-4 and nums[index]==nums[index+1]:
+                index +=1
+            
+            index += 1
+        
+        return fourSumRes
+
+    def threeSum(self, nums: List[int], target:int) -> List[List[int]]:
+        threeSumRes = []
+        # nums.sort()
+        list_len = len(nums)
+        index = 0
+        while index < list_len-2:
+            twoSumRes = self.twoSum(nums[index+1:], target-nums[index])
+            for val in twoSumRes:
+                val.append(nums[index])
+                threeSumRes.append(val)
+            
+            while index<list_len-3 and nums[index]==nums[index+1]:
+                index += 1
+            index += 1
+
+        return threeSumRes
+
+    def twoSum(self, nums, target):
+        list_len = len(nums)
+        left = 0
+        right = list_len - 1
+        res = []
+        while left < right:
+            temp = nums[left]+nums[right]
+            if  temp == target:
+                res.append([nums[left], nums[right]])
+                while left<right and nums[left]==nums[left+1]:
+                    left += 1
+                left += 1
+                while left<right and nums[right]==nums[right-1]:
+                    right -= 1
+                right -= 1
+            elif temp < target:
+                while left<right and nums[left]==nums[left+1]:
+                    left += 1
+                left += 1
+            else:
+                while left<right and nums[right]==nums[right-1]:
+                    right -= 1
+                right -= 1
+
+        return res
+###### nsum end ############
+        
+###### 滑动窗口 start ############
+# 438. 找到字符串中所有字母异位词
+class Solution:
+    def findAnagrams(self, s: str, p: str) -> List[int]:
+        need = {}
+        for char in p:
+            need[char] = need.setdefault(char, 0) + 1
+        
+        window = {}
+        left = right = valid = 0
+        res = []
+
+        while right < len(s):
+            curr_char = s[right]
+            right += 1
+
+            if curr_char in need.keys():
+                window[curr_char] = window.setdefault(curr_char, 0) + 1
+                if window[curr_char] == need[curr_char]:
+                    valid += 1
+            
+            while right-left == len(p):
+                if valid == len(need):
+                    res.append(left)
+                
+                del_char = s[left]
+                left += 1
+                
+                if del_char in need.keys():
+                    if window[del_char] == need[del_char]:
+                        valid -= 1
+                    window[del_char] -= 1
+
+        return res 
+
+
+# 567. 字符串的排列
+class Solution:
+    def checkInclusion(self, s1: str, s2: str) -> bool:
+        need = {}
+        for char in s1:
+            need[char] = need.setdefault(char, 0) + 1
+        
+        window = {}
+        left = right = valid= 0
+
+        while right < len(s2):
+            curr_char = s2[right]
+            right += 1
+
+            if curr_char in need.keys():
+                window[curr_char] = window.setdefault(curr_char, 0) + 1
+                if window[curr_char] == need[curr_char]:
+                    valid += 1
+            
+            while right-left == len(s1):
+                if valid == len(need):
+                    return True
+                
+                del_char = s2[left]
+                left += 1
+
+                if del_char in need.keys():
+                    if window[del_char] == need[del_char]:
+                        valid -= 1
+                    window[del_char] -= 1
+            
+        return False
+            
+
+# 76. 最小覆盖子串
+class Solution:
+    def minWindow(self, s: str, t: str) -> str:
+        need = {}
+        for char in t:
+            need[char] = need.setdefault(char, 0) + 1
+        
+        window = {}
+
+        left = right = valid = 0
+        length = float('inf') 
+        res = ''
+
+        while right < len(s):
+            curr_char = s[right]
+            right += 1
+
+            if curr_char in need.keys():
+                window[curr_char] = window.setdefault(curr_char, 0) + 1
+                if window[curr_char] == need[curr_char]:
+                    valid += 1
+            
+            while valid == len(need.keys()):
+                if right-left < length:
+                    length = right - left
+                    res = s[left:right]
+                
+                del_char = s[left]
+                left += 1
+
+                if del_char in need.keys():
+                    if window[del_char] == need[del_char]:
+                        valid -= 1
+                    window[del_char] -= 1
+            
+        return res
+
+
+# 3. 无重复字符的最长子串
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        # 滑动窗口
+        length = len(s)
+        left = right = res = 0
+
+        window = dict()
+
+        while right < length:
+            curr_char = s[right]
+            right += 1
+
+            window[curr_char] =  window.setdefault(curr_char, 0) + 1
+
+            while window[curr_char]>1:
+                del_char = s[left]
+                left += 1
+                window[del_char] -= 1
+
+            res = max(res, right-left)
+
+        return res
+###### 滑动窗口 end ############
+
+
+# 剑指 Offer 42. 连续子数组的最大和
+class Solution:
+    def maxSubArray(self, nums: List[int]) -> int:
+    	'''
+    	动态规划算法
+    	'''
+        dp = [0]*len(nums)
+
+        dp[0] = nums[0]
+
+        for i in range(1, len(nums)):
+            dp[i] = nums[i] + max(dp[i-1], 0)
+        
+        return max(dp)
+
+
+
+# 剑指 Offer 68 - II. 二叉树的最近公共祖先
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def lowestCommonAncestor(self, root: TreeNode, p: TreeNode, q: TreeNode) -> TreeNode:
+
+        if not root or root==p or root==q:
+            return root
+
+        left = self.lowestCommonAncestor(root.left, p, q)
+        right = self.lowestCommonAncestor(root.right, p, q)
+
+        if not left: 
+            return right
+        if not right:
+            return left
+        return root
+
+
 # 剑指 Offer 68 - I. 二叉搜索树的最近公共祖先
 # Definition for a binary tree node.
 # class TreeNode:
