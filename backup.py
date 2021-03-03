@@ -1,25 +1,226 @@
 '''
+双指针：
+    滑动窗口： 76 567 438 3 *** 双指针
+    nsum： 1 15 18 *** 排序+双指针/哈希表
+    移除元素： 27 ***
+    链表： 142 206 ***
+
+区间问题： 1288 56 986 435 452 ***
+
+二叉树： 124 99
+        297 1908 ***
+        226 114 116 105 ***
+        654 105 106 652 ***
+
+二叉搜索树：230 538 1038 ***
+
+单调栈：496 503 1118
+单调队列：239
+
+贪心算法： 435 452 55 45
+
 动态规划：
 	最大子数组： 53
 	最长公共子序列： 1143 583 712
 	背包问题： 416 518 0-1背包
 	股票买卖：
 
-二叉树：124 105 99
-
 回溯： N皇后
 
 BFS： 111 752
 
-双指针：
-	滑动窗口： 76 567 438 3 *** 双指针
-	nsum： 1 15 18 *** 排序+双指针/哈希表
-    移除元素： 27
-    链表： 142 206
-
 哈希表： 1 454 
 
 '''
+# 452. 用最少数量的箭引爆气球
+class Solution:
+    def findMinArrowShots(self, points: List[List[int]]) -> int:
+
+        list_len = len(points)
+        if list_len == 0:
+            return 0
+
+        def sort_rule(point):
+            return point[1]
+        
+        points.sort(key=sort_rule)
+        res = 1
+        curr_end = points[0][1]
+
+        for index in range(1, list_len):
+            if curr_end<points[index][0]:
+                res += 1
+                curr_end = points[index][1]
+            
+        return res
+
+# 435. 无重叠区间
+class Solution:
+    def eraseOverlapIntervals(self, intervals: List[List[int]]) -> int:
+        # 排序+贪心
+
+        list_len = len(intervals)
+        if list_len == 0:
+            return 0
+
+        def sort_rule(interval):
+            return interval[1]
+        
+        intervals.sort(key=sort_rule)
+        res = 1
+        curr_end = intervals[0][1]
+
+        for index in range(1, list_len):
+            if curr_end<=intervals[index][0]:
+                res += 1
+                curr_end = intervals[index][1]
+            
+        return list_len - res
+            
+
+###### 排序+画图 start ############
+# 986. 区间列表的交集
+class Solution:
+    def intervalIntersection(self, firstList: List[List[int]], secondList: List[List[int]]) -> List[List[int]]:
+        i= j = 0
+        res = []
+        while i<len(firstList) and j<len(secondList):
+            listA = firstList[i]
+            listB = secondList[j]
+
+            # 不相交
+            if listA[0]>listB[1]:
+                j+=1
+            elif listA[1]<listB[0]:
+                i+=1
+            # 相交
+            else:
+                minBound = max(listA[0], listB[0])
+                maxBound = min(listA[1], listB[1])
+                res.append([minBound, maxBound])
+
+                if listA[1]<listB[1]:
+                    i+=1
+                else:
+                    j+=1
+        
+        return res
+
+# 1288. 删除被覆盖区间
+class Solution:
+    def removeCoveredIntervals(self, intervals: List[List[int]]) -> int:
+
+        # 使用起点升序排列，起点相同时使用终点降序排列
+        def sort_rule(interval):
+            return interval[0], -interval[1]
+        
+        intervals.sort(key=sort_rule)
+        res = []
+
+        for interval in intervals:
+            if not res or res[-1][1]<interval[0]:
+                res.append(interval)
+            elif interval[1]>res[-1][1]:
+                res.append(interval)
+
+        return len(res)
+
+
+# 56. 合并区间
+class Solution:
+    def merge(self, intervals: List[List[int]]) -> List[List[int]]:
+        def sort_rule(interval):
+            return interval[0]
+        
+        intervals.sort(key=sort_rule)
+
+        res = []
+
+        for interval in intervals:
+            if not res or res[-1][1]<interval[0]:
+                res.append(interval)
+            else:
+                res[-1][1] = max(interval[1], res[-1][1])
+            
+        return res
+###### 排序+画图 end ############
+
+###### 链表+指针 start ############
+# 206. 反转链表
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def reverseList(self, head: ListNode) -> ListNode:
+        
+        pre = None
+        curr = head
+
+        while curr is not None:
+            nextN = curr.next
+            curr.next = pre
+            pre = curr
+            curr = nextN
+        
+        return pre
+        
+
+# 142. 环形链表 II
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def detectCycle(self, head: ListNode) -> ListNode:
+        slow = fast = head
+        while fast is not None and fast.next is not None:
+            slow = slow.next
+            fast = fast.next.next
+
+            if slow == fast:
+                break
+        
+        if fast is None or fast.next is None:
+            return None
+        
+        slow = head
+        while slow is not fast:
+            slow = slow.next
+            fast = fast.next
+        
+        return slow
+
+
+# 27. 移除元素
+class Solution:
+    def removeElement(self, nums: List[int], val: int) -> int:
+
+        list_len = len(nums)
+        left = 0
+        right = list_len - 1
+        
+        while right>-1 and nums[right]==val:
+            right -= 1
+
+        while left<right:
+            if nums[left]==val:
+                nums[left], nums[right] = nums[right], nums[left]
+                
+                while right>-1 and nums[right]==val:
+                    right -= 1
+            else:
+                left += 1
+            
+        if right<0:
+            return 0
+        else:
+            return left+1
+###### 链表+指针 end ############
+
 ###### nsum start ############
 # 1. 两数之和
 class Solution:
