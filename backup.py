@@ -14,8 +14,10 @@
 
 二叉搜索树：230 538 1038 ***
 
-单调栈：496 503 1118
-单调队列：239
+单调栈：496 503 ***
+单调队列：239 ***
+
+翻转链表： 25 234 ***
 
 贪心算法： 435 452 55 45
 
@@ -24,6 +26,9 @@
 	最长公共子序列： 1143 583 712
 	背包问题： 416 518 0-1背包
 	股票买卖：
+    编辑距离： 72
+    信封嵌套： 354
+    最长递增子序列： 300
 
 回溯： N皇后
 
@@ -32,6 +37,42 @@ BFS： 111 752
 哈希表： 1 454 
 
 '''
+# 25. K 个一组翻转链表
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def reverseKGroup(self, head: ListNode, k: int) -> ListNode:
+        # 翻转[a,b)之间的链表
+        def reverse(a, b):
+            pre = None
+            curr = nxt = a
+            while curr is not b:
+                nxt = curr.next
+                curr.next = pre
+                pre = curr
+                curr = nxt
+
+            return pre
+        
+        if head==None:
+            return head
+
+        a = b = head
+
+        # 如果有k个链表则翻转，否则直接返回
+        for i in range(k):
+            if b==None:
+                return head
+            b = b.next
+        
+        newHead = reverse(a, b)
+        a.next = self.reverseKGroup(b, k)
+
+        return newHead
+        
 # 452. 用最少数量的箭引爆气球
 class Solution:
     def findMinArrowShots(self, points: List[List[int]]) -> int:
