@@ -1,4 +1,26 @@
 '''
+最长递增子序列
+
+'''
+def LongestUpSubstring(input_list):
+    length = len(input_list)
+
+    dp = [1 for i in range(length)]
+
+    for i in range(length):
+        for j in range(index):
+            if input_list[j] < input_list[i]:
+                dp[i] = max(dp[i], dp[j]+1)
+
+    res = 0
+    for i in range(length):
+        if dp[i] > res:
+            res = dp[i]
+
+    return res
+
+
+'''
 找零问题
 包含找零的策略
 coins：1，2，5
