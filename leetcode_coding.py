@@ -1,4 +1,56 @@
 '''
+0-1 背包
+weight = [2, 1, 3]
+value = [4, 2, 3]
+w = 5
+print(zero_one_bags(value, weight, w))
+print()
+'''
+def zero_one_bags(value, weight, w):
+    length = len(value)
+
+    dp = [[0 for i in range(w+1)] for j in range(length+1)]
+
+    for i in range(1, length+1):
+        for j in range(1, w+1):
+            if j - weight[i-1] >= 0:
+                dp[i][j] = max(dp[i-1][j], dp[i-1][j-weight[i-1]]+value[i-1])
+            else:
+                dp[i][j] = dp[i-1][j]
+
+    return dp[-1][-1]
+
+
+'''
+给你一个字符串 s ，找出其中最长的回文子序列，并返回该序列的长度。
+子序列定义为：不改变剩余字符顺序的情况下，删除某些字符或者不删除任何字符形成的一个序列。
+s = "bbbab" 4
+s = "cbbd" 2
+
+a = Solution2()
+print(a.longestPalindromeSubseq('cbbd'))
+print()
+'''
+class Solution2:
+    def longestPalindromeSubseq(self, s):
+        length = len(s)
+
+        dp = [[0 for j in range(length)] for i in range(length)]
+
+        for i in range(length):
+            dp[i][i] = 1
+
+        for i in range(length-2, -1, -1):
+            for j in range(i+1, length):
+                if s[i] == s[j]:
+                    dp[i][j] = dp[i+1][j-1] + 2
+                else:
+                    dp[i][j] = max(dp[i][j-1], dp[i+1][j])
+
+        return dp[0][length-1]
+
+
+'''
 最长递增子序列
 
 '''
@@ -249,7 +301,7 @@ class Solution:
 
         return []
 
-
+'''
 if __name__ == '__main__':
     # coin change
     print('coin change')
@@ -281,3 +333,4 @@ if __name__ == '__main__':
     test_class = Solution()
     result = test_class.twoSum(nums, target)
     print(result)
+'''
