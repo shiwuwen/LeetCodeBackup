@@ -1,4 +1,35 @@
 '''
+K个一组反转链表
+'''
+def reverseList(start, end):
+    pre = None
+    curr = net = start
+    while curr != end:
+        net = curr.next
+        cur.next = pre
+        pre = curr
+        curr = net
+
+    return pre 
+
+def reverseKGroup(head, k):
+    if not head:
+        return head
+
+    a = b = head
+
+    for i in range(k):
+        if not b:
+            return head
+        b = b.next
+
+    newhead = reverseList(a, b)
+
+    a.next = self.reverseKGroup(b, k)
+
+    return newhead
+
+'''
 0-1 背包
 weight = [2, 1, 3]
 value = [4, 2, 3]
