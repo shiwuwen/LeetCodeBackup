@@ -1,4 +1,73 @@
 '''
+给定一个字符串，验证它是否是回文串，只考虑字母和数字字符，可以忽略字母的大小写。
+'''
+def isPalindrome(s):
+    length = len(s)
+    if length < 2:
+        return True
+
+    s.lower()
+
+    left = 0
+    right = length - 1
+
+    while not s[left].isalnum():
+        left += 1
+
+    while not s[right].isalnum():
+        right -= 1
+
+    while left < right:
+        if s[left] != s[right]:
+            return False
+
+        left += 1
+        right -= 1
+
+        while not s[left].isalnum():
+            left += 1
+
+        while not s[right].isalnum():
+            right -= 1
+
+    return True
+
+s = "A man, a plan, a canal: Panama"
+print(isPalindrome(s))
+
+
+
+
+
+'''
+路径 被定义为一条从树中任意节点出发，沿父节点-子节点连接，达到任意节点的序列。同一个节点在一条路径序列中 至多出现一次 。
+该路径 至少包含一个 节点，且不一定经过根节点。
+路径和 是路径中各节点值的总和。
+给你一个二叉树的根节点 root ，返回其 最大路径和 。
+'''
+class Solution:
+    def __init__(self):
+        self.max_sum = float('-inf')
+
+    def maxPathSum(self, root):
+        def maxSum(root):
+            if not root:
+                return 0
+
+            leftSum = max(0, maxSum(root.left))
+            rightSum = max(0, maxSum(root.right))
+
+            currSum = root.val + leftSum + rightSum
+
+            self.maxSum = max(self.maxSum, currSum)
+
+            return root.val + max(leftSum, rightSum)
+
+        maxSum(root)
+        return self.maxSum
+
+
+'''
 给定一个数组，它的第 i 个元素是一支给定的股票在第 i 天的价格。
 设计一个算法来计算你所能获取的最大利润。你最多可以完成 两笔 交易。
 注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
