@@ -1,4 +1,191 @@
 '''
+给定一个数组，它的第 i 个元素是一支给定的股票在第 i 天的价格。
+设计一个算法来计算你所能获取的最大利润。你最多可以完成 两笔 交易。
+注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
+
+# prices = [3,3,5,0,0,3,1,4]
+prices = [1,2,3,4,5]
+print(maxProfit3(prices))
+'''
+def maxProfit3(prices):
+    length = len(prices) + 1
+
+    dp = [[[0 for j in range(2)] for k in range(3)] for i in range(length)]
+    
+    for i in range(length):
+        dp[i][0][0] = 0
+        dp[i][0][1] = -float('inf')
+
+    for k in range(3):
+        dp[0][k][0] = 0
+        dp[0][k][1] = -float('inf')
+
+    for index in range(1, length):
+        for k in range(1, 3):
+            dp[index][k][0] = max(dp[index-1][k][0], dp[index-1][k][1] + prices[index-1])
+            dp[index][k][1] = max(dp[index-1][k][1], dp[index-1][k-1][0] - prices[index-1])
+
+    return dp[-1][-1][0]
+
+
+'''
+输入: prices = [7,1,5,3,6,4]
+输出: 7
+解释: 在第 2 天（股票价格 = 1）的时候买入，在第 3 天（股票价格 = 5）的时候卖出, 这笔交易所能获得利润 = 5-1 = 4 。
+     随后，在第 4 天（股票价格 = 3）的时候买入，在第 5 天（股票价格 = 6）的时候卖出, 这笔交易所能获得利润 = 6-3 = 3 。
+'''
+def maxProfit2(prices):
+    length = len(prices) + 1
+
+    dp = [[0 for j in range(2)] for i in range(length)]
+    dp[0][1] = -float('inf')
+
+    for index in range(1, length):
+        dp[index][0] = max(dp[index-1][0], dp[index-1][1] + prices[index-1])
+        dp[index][1] = max(dp[index-1][1], dp[index-1][0] - prices[index-1])
+
+    return dp[-1][0]
+
+
+'''
+给定一个数组 prices ，它的第 i 个元素 prices[i] 表示一支给定股票第 i 天的价格。
+
+你只能选择 某一天 买入这只股票，并选择在 未来的某一个不同的日子 卖出该股票。设计一个算法来计算你所能获取的最大利润。
+
+返回你可以从这笔交易中获取的最大利润。如果你不能获取任何利润，返回 0 。
+
+输入：[7,1,5,3,6,4]
+输出：5
+解释：在第 2 天（股票价格 = 1）的时候买入，在第 5 天（股票价格 = 6）的时候卖出，最大利润 = 6-1 = 5 。
+     注意利润不能是 7-1 = 6, 因为卖出价格需要大于买入价格；同时，你不能在买入前卖出股票。
+
+prices = [7,1,5,3,6,4]
+print(maxProfit(prices))
+'''
+
+def maxProfit(prices):
+    length = len(prices) + 1
+
+    dp = [[0 for j in range(2)] for i in range(length)]
+    dp[0][1] = -float('inf')
+
+    for index in range(1, length):
+        dp[index][0] = max(dp[index-1][0], dp[index-1][1] + prices[index-1])
+        dp[index][1] = max(dp[index-1][1], -prices[index-1])
+
+    return dp[-1][0]
+
+
+'''
+给定一个三角形 triangle ，找出自顶向下的最小路径和。
+
+每一步只能移动到下一行中相邻的结点上。相邻的结点 在这里指的是 下标 与 上一层结点下标 相同或者等于 上一层结点下标 + 1 的两个结点。
+也就是说，如果正位于当前行的下标 i ，那么下一步可以移动到下一行的下标 i 或 i + 1 。
+triangle = [[2],[3,4],[6,5,7],[4,1,8,3]]
+print(minimumTotal(triangle))
+11
+'''
+def minimumTotal(triangle):
+    length = len(triangle)
+    # if length == 1:
+        # return triangle[0][0]
+
+    for index in range(length-2, -1, -1):
+        curr = triangle[index]
+        post = triangle[index + 1]
+
+        for j in range(len(curr)):
+            curr[j] = curr[j] + min(post[j], post[j+1])
+
+    return triangle[0][0]
+
+
+'''
+给定一个非负整数 numRows，生成「杨辉三角」的前 numRows 行。
+
+在「杨辉三角」中，每个数是它左上方和右上方的数的和。
+print(generateTriangle(5))
+'''
+def generateTriangle(numRows):
+    result = [[1]]
+    if numRows < 2:
+        return result
+    result.append([1, 1])
+
+    for index in range(2, numRows):
+        length = len(result[-1])
+        pre = result[-1]
+
+        # curr = [1 for i in range(length+1)]
+        curr = [1] * (length + 1) 
+        mid = length // 2
+
+        for j in range(1, mid+1):
+            curr[j] = pre[j-1] + pre[j]
+            curr[length - j] = curr[j]
+
+        result.append(curr)
+
+    return result
+
+
+'''
+给定一个 完美二叉树 ，其所有叶子节点都在同一层，每个父节点都有两个子节点。二叉树定义如下：
+
+struct Node {
+  int val;
+  Node *left;
+  Node *right;
+  Node *next;
+}
+填充它的每个 next 指针，让这个指针指向其下一个右侧节点。如果找不到下一个右侧节点，则将 next 指针设置为 NULL。
+
+初始状态下，所有 next 指针都被设置为 NULL。
+'''
+def connectTwoNode(self, node1, node2):
+    if not node1 or not node2:
+        return 
+
+    node1.next = node2
+
+    self.connectTwoNode(node1.left, node1.right)
+    self.connectTwoNode(node2.left, node2.right)
+    self.connectTwoNode(node1.right, node2.left)
+
+def connect(self, root: 'Node') -> 'Node':
+    if not root:
+        return
+    self.connectTwoNode(root.left, root.right)
+
+    return root
+
+
+'''
+给你二叉树的根结点 root ，请你将它展开为一个单链表：
+
+展开后的单链表应该同样使用 TreeNode ，其中 right 子指针指向链表中下一个结点，而左子指针始终为 null 。
+展开后的单链表应该与二叉树 先序遍历 顺序相同。
+'''
+def flatten(root):
+    if not root:
+        return
+
+    self.flatten(root.left)
+    self.flatten(root.right)
+
+    left = root.left
+    right = root.right
+
+    root.right = left
+    root.left = None
+
+    temp = root
+    while temp.right:
+        temp = temp.right
+
+    temp.right = right
+
+'''
 K个一组反转链表
 '''
 def reverseList(start, end):
@@ -28,6 +215,7 @@ def reverseKGroup(head, k):
     a.next = self.reverseKGroup(b, k)
 
     return newhead
+
 
 '''
 0-1 背包
