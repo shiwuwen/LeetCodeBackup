@@ -1,20 +1,22 @@
 '''
 给定一个字符串，验证它是否是回文串，只考虑字母和数字字符，可以忽略字母的大小写。
+s = "A man, a plan, a canal: Panama"
 '''
 def isPalindrome(s):
+	# something wrong when s = './'
     length = len(s)
     if length < 2:
         return True
 
-    s.lower()
+    s = s.lower()
 
     left = 0
     right = length - 1
 
-    while not s[left].isalnum():
+    while left < right and not s[left].isalnum():
         left += 1
 
-    while not s[right].isalnum():
+    while right > left and not s[right].isalnum():
         right -= 1
 
     while left < right:
@@ -24,19 +26,16 @@ def isPalindrome(s):
         left += 1
         right -= 1
 
-        while not s[left].isalnum():
+        while left < right and not s[left].isalnum():
             left += 1
 
-        while not s[right].isalnum():
+        while right > left and not s[right].isalnum():
             right -= 1
 
-    return True
+    return False
 
-s = "A man, a plan, a canal: Panama"
+s = "./"
 print(isPalindrome(s))
-
-
-
 
 
 '''
