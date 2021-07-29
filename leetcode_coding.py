@@ -1,6 +1,74 @@
 '''
+给你一个二叉树的根节点 root ，树中每个节点都存放有一个 0 到 9 之间的数字。
+每条从根节点到叶节点的路径都代表一个数字：
+
+例如，从根节点到叶节点的路径 1 -> 2 -> 3 表示数字 123 。
+计算从根节点到叶节点生成的 所有数字之和 。
+
+叶节点 是指没有子节点的节点。
+'''
+def sumNumbers(self, root):
+    self.value = 0
+    self.sum = 0
+    def helper(root):
+        if not root.left and not root.right:
+            self.value = self.value * 10 + root.val
+            self.sum += self.value
+            self.value = (self.value - root.val) / 10
+            return
+
+        if root.left:
+            self.value = self.value * 10 + root.val
+            helper(root.left)
+            self.value = (self.value - root.val) / 10
+
+        if root.right:
+            self.value = self.value * 10 + root.val
+            helper(root.right)
+            self.value = (self.value - root.val) / 10
+
+    helper(root)
+    return self.sum
+
+
+'''
+nums = [100,4,200,1,3,2]
+nums = [0,3,7,2,5,8,4,6,0,1]
+'''
+def longestConsecutive(nums):
+    nums.sort()
+    length = len(nums)
+
+    if length <= 1:
+        return length
+
+    max_len = 0
+    curr_len = 1
+
+    for index in range(1, length):
+        if nums[index] == nums[index-1]:
+            max_len = max(max_len, curr_len)
+        elif nums[index] == nums[index-1] + 1:
+            curr_len += 1
+        else:
+            max_len = max(max_len, curr_len)
+            curr_len = 1
+
+    if nums[-1] == nums[-2] + 1:
+        max_len = max(max_len, curr_len)
+
+    return max_len
+
+
+nums = [1,0,1,0]
+print(longestConsecutive(nums))
+
+
+'''
 给定一个字符串，验证它是否是回文串，只考虑字母和数字字符，可以忽略字母的大小写。
 s = "A man, a plan, a canal: Panama"
+s = "./"
+print(isPalindrome(s))
 '''
 def isPalindrome(s):
 	# something wrong when s = './'
@@ -33,9 +101,6 @@ def isPalindrome(s):
             right -= 1
 
     return False
-
-s = "./"
-print(isPalindrome(s))
 
 
 '''
