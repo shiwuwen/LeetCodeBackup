@@ -1,4 +1,85 @@
 '''
+给你一个 m x n 的矩阵 board ，由若干字符 'X' 和 'O' ，找到所有被 'X' 围绕的区域，并将这些区域里所有的 'O' 用 'X' 填充。
+board = [["X","X","X","X"],["X","O","O","X"],["X","X","O","X"],["X","O","X","X"]]
+solve(board)
+print(board)
+'''
+def solve(board):
+	# dfs
+	# if not board:
+	# 	return 
+
+	# n = len(board)
+	# m = len(board[0])
+
+	# def dfs(x, y):
+	# 	if not 0<=x<n or not 0<=y<m or board[x][y] != "O":
+	# 		return
+
+	# 	board[x][y] = "A"
+		
+	# 	dfs(x + 1, y)
+	# 	dfs(x - 1, y)
+	# 	dfs(x, y + 1)
+	# 	dfs(x, y - 1)
+
+	# for i in range(n):
+	# 	dfs(i, 0)
+	# 	dfs(i, m-1)
+
+	# for j in range(m-1):
+	# 	dfs(0, j)
+	# 	dfs(n-1, j)
+	
+	# for i in range(n):
+	# 	for j in range(m):
+	# 		if board[i][j] == "A":
+	# 			board[i][j] = "O"
+	# 		elif board[i][j] == "O":
+	# 			board[i][j] = "X"
+
+	# bfs
+	if not board:
+		return 
+
+	n = len(board)
+	m = len(board[0])
+
+	import collections
+	queue = collections.deque()
+
+	for i in range(n):
+		if board[i][0] == 'O':
+			board[i][0] = 'A'
+			queue.append((i, 0))
+		if board[i][m-1] == 'O':
+			board[i][m-1] = 'A'
+			queue.append((i, m-1))
+
+	for j in range(1, m-1):
+		if board[0][j] == 'O':
+			board[0][j] = 'A'
+			queue.append((0, j))
+		if board[n-1][j] == 'O':
+			board[n-1][j] = 'A'
+			queue.append((n-1, j))
+
+	while queue:
+		x, y = queue.popleft()
+		for i, j in ((x-1, y), (x+1, y), (x, y-1), (x, y+1)):
+			if 0<=i<n and 0<=j<m and board[i][j] == 'O':
+				board[i][j] = 'A'
+				queue.append((i, j))
+
+	for i in range(n):
+		for j in range(m):
+			if board[i][j] == 'A':
+				board[i][j] = 'O'
+			elif board[i][j] == 'O':
+				board[i][j] = 'X'
+
+
+'''
 给你一个二叉树的根节点 root ，树中每个节点都存放有一个 0 到 9 之间的数字。
 每条从根节点到叶节点的路径都代表一个数字：
 
@@ -34,6 +115,8 @@ def sumNumbers(self, root):
 '''
 nums = [100,4,200,1,3,2]
 nums = [0,3,7,2,5,8,4,6,0,1]
+nums = [1,0,1,0]
+print(longestConsecutive(nums))
 '''
 def longestConsecutive(nums):
     nums.sort()
@@ -58,10 +141,6 @@ def longestConsecutive(nums):
         max_len = max(max_len, curr_len)
 
     return max_len
-
-
-nums = [1,0,1,0]
-print(longestConsecutive(nums))
 
 
 '''
