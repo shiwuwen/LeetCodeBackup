@@ -1,4 +1,116 @@
 '''
+包含min函数的栈
+'''
+class MinStack:
+
+    def __init__(self):
+        """
+        initialize your data structure here.
+        """
+        self.stack = collections.deque()
+        self.min_stack = collections.deque()
+
+
+    def push(self, x: int) -> None:
+        self.stack.append(x)
+        if not self.min_stack:
+            self.min_stack.append(x)
+        elif x <= self.min_stack[-1]:
+            self.min_stack.append(x)
+
+
+    def pop(self) -> None:
+        temp = self.stack.pop()
+
+        if temp == self.min_stack[-1]:
+            self.min_stack.pop()
+
+
+    def top(self) -> int:
+        return self.stack[-1]
+
+
+    def min(self) -> int:
+        return self.min_stack[-1]
+
+
+'''
+用两个栈实现队列
+'''
+class CQueue:
+
+    def __init__(self):
+        self.left = collections.deque()
+        self.right = collections.deque()
+
+
+    def appendTail(self, value: int) -> None:
+        self.left.append(value)
+
+    def deleteHead(self) -> int:
+        if not self.left:
+            return -1
+        
+        if self.left:
+            while self.left:
+                self.right.append(self.left.pop())
+            
+            temp = self.right.pop()
+            while self.right:
+                self.left.append(self.right.pop())
+            
+            return temp
+
+
+'''
+罗马数字转整数
+s = "MCMXCIV" 1994
+a = romanToIntSolution()
+s = "CMXCIX" # 999
+print(a.romanToInt(s))
+'''
+class romanToIntSolution:
+    def romanToInt(self, s):
+        total_num = 0
+
+        num_map = {'I':1, 'V':5, 'X':10, 'L':50, 'C':100, 'D':500, 'M':1000}
+
+        length = len(s)
+        if length == 1:
+            return num_map[s[0]]
+        
+        index = 0
+
+        while index < length:
+            if s[index] != 'I' and s[index] != 'X' and s[index] != 'C':
+                total_num += num_map[s[index]]
+                index += 1
+            elif s[index] == 'I':
+                if index + 1 < length and (s[index+1] == 'V' or s[index+1] == 'X'):
+                    total_num += num_map[s[index+1]] - num_map[s[index]]
+                    index += 2
+                else:
+                    total_num += num_map[s[index]]
+                    index += 1
+            elif s[index] == 'X':
+                if index + 1 < length and (s[index+1] == 'L' or s[index+1] == 'C'):
+                    total_num += num_map[s[index+1]] - num_map[s[index]]
+                    index += 2
+                else:
+                    total_num += num_map[s[index]]
+                    index += 1
+            elif s[index] == 'C':
+                if index + 1 < length and (s[index+1] == 'D' or s[index+1] == 'M'):
+                    total_num += num_map[s[index+1]] - num_map[s[index]]
+                    index += 2
+                else:
+                    total_num += num_map[s[index]]
+                    index += 1
+        
+        return total_num
+
+
+'''
 给你一个 m x n 的矩阵 board ，由若干字符 'X' 和 'O' ，找到所有被 'X' 围绕的区域，并将这些区域里所有的 'O' 用 'X' 填充。
 board = [["X","X","X","X"],["X","O","O","X"],["X","X","O","X"],["X","O","X","X"]]
 solve(board)
