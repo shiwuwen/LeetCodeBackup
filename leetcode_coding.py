@@ -1,4 +1,49 @@
 '''
+在排序数组中查找数字 I
+'''
+class SearchNums:
+    def search(self, nums, target):
+        left = 0
+        right = len(nums)
+        total_nums = 0
+
+        if right == 0:
+            return 0
+        
+        while left < right:
+            mid = (left + right) // 2
+            if target == nums[mid]:
+                total_nums += 1
+                temp = mid + 1
+                while temp < right:
+                    if nums[temp] == target:
+                        total_nums += 1
+                        temp += 1
+                    else:
+                        break
+                
+                temp = mid - 1
+                while temp >= left:
+                    if nums[temp] == target:
+                        total_nums += 1
+                        temp -= 1
+                    else:
+                        break
+                left = right + 1
+            elif target < nums[mid]:
+                right = mid
+            else:
+                left = mid + 1
+            
+        return total_nums
+
+a = SearchNums()
+nums = [7,7]
+target = 7
+print(a.search(nums, target))
+
+
+'''
 包含min函数的栈
 '''
 class MinStack:
