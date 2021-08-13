@@ -1,5 +1,34 @@
+class minArray:
+    def minArray(self, numbers):
+        left = 0
+        right = len(numbers) - 1
+
+        if right == 0:
+            return numbers[left]
+
+        while left < right:
+            mid = (left + right) // 2
+
+            if mid > left and numbers[mid] < numbers[left] and numbers[mid] < numbers[right]:
+                return numbers[mid]
+            elif mid == left:
+                return min(numbers[left], numbers[right])
+            else:
+                left = mid + 1
+        
+        return min(numbers[0], numbers[-1])
+
+a = minArray()
+numbers = [3,4,4]
+print(a.minArray(numbers))
+
 '''
 在排序数组中查找数字 I
+
+a = SearchNums()
+nums = [7,7]
+target = 7
+print(a.search(nums, target))
 '''
 class SearchNums:
     def search(self, nums, target):
@@ -36,11 +65,6 @@ class SearchNums:
                 left = mid + 1
             
         return total_nums
-
-a = SearchNums()
-nums = [7,7]
-target = 7
-print(a.search(nums, target))
 
 
 '''
